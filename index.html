@@ -64,6 +64,63 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
     </head>
+    
+ <body style="position: absolute;margin: 0px;">
+    <script>
+        var keyIncrease = [17, 61];
+        var keyDecrease = [17, 173];
+        var keyDefault = [17, 48];
+        var listenMultiKeypress = function(keys, callback){
+            var keyOn = [];
+            for(var i=0; i<keys.length; i++){
+                keyOn[i] = false;
+            }
+            addEventListener('keydown', function(e){
+                var keyCode = e.which;
+                console.log(keyCode);
+                var idx = keys.indexOf(keyCode);
+                if(idx!=-1){
+                    keyOn[idx] = true;
+                }
+                console.log(keyOn);
+                for(var i=0; i<keyOn.length; i++){
+                    if(!keyOn[i]){
+                        return;
+                    }
+                }
+                setTimeout(callback, 100);
+            });
+            addEventListener('keyup', function(e){
+                var keyCode = e.which;
+                var idx = keys.indexOf(keyCode);
+                if(idx!=-1){
+                    keyOn[idx] = false;
+                }
+                console.log(keyOn);
+            });
+        };
+        var previousScale = 1;
+        var previousDevicePixelRatio;
+        var neutralizeZoom = function(){
+            //alert('caught');
+            var scale = 1/window.devicePixelRatio;
+
+            document.body.style.transform = 'scale('+(1/previousScale)+')';
+            document.body.style.transform = 'scale('+scale+')';
+            var widthDiff = parseInt(getComputedStyle(window.document.body).width)*(scale-1);
+            var heightDiff = parseInt(getComputedStyle(window.document.body).height)*(scale-1);
+            document.body.style.left = widthDiff/2 + 'px';
+            document.body.style.top = heightDiff/2 + 'px';
+            previousScale = scale;
+        };
+
+        listenMultiKeypress(keyIncrease, neutralizeZoom);
+        listenMultiKeypress(keyDecrease, neutralizeZoom);
+        listenMultiKeypress(keyDefault, neutralizeZoom);
+        neutralizeZoom();
+    </script>
+</body>
+</html>
     <body id="page-top">
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
